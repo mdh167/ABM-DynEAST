@@ -1,0 +1,431 @@
+extensions [ nw ]
+breed [humans human]
+breed [informations information]
+undirected-link-breed [edges edge]
+undirected-link-breed [interlayers interlayer]
+humans-own [fatigue experience stress percieved-workload]
+informations-own [novelty relevance-to-task weight]
+
+
+to setup
+  clear-all
+  reset-ticks
+create-humans num-humans
+  [
+    layout-circle sort humans max-pxcor - 10
+  ]
+create-informations num-informations
+[
+  layout-circle sort informations max-pxcor - 4
+  ]
+  ask humans [set color green]
+  ask human 0 [set fatigue [ 5 ]]
+  ask human 1 [set percieved-workload one-of [8]]
+   ;; change agent variables
+  ask human 0 [set label "PPO"]
+    ask human 1 [set label "Signaller"]
+    ask human 2 [set label "PO team A"]
+    ask human 3 [set label "PO team B"]
+    ask human 4 [set label "PO team C"]
+    ask human 5 [set label "PO team D"]
+    ask human 6 [set label "PO team E"]
+  ask informations [set color red]
+  ask information  7 [set color blue]
+  ask information  8 [set color blue]
+  ask information  9 [set color blue]
+  ask information  10 [set color blue]
+  ask information  11[set color blue]
+  ask information  12 [set color blue]
+  ask information  13 [set color blue]
+  ask information 7 [set label "points to be clipped A"]
+  ask information 8 [set label "points to be clipped B"]
+  ask information 9 [set label "points to be clipped C"]
+  ask information 10 [set label "points to be clipped D"]
+  ask information 11  [set label "points to be clipped E"]
+  ask information 12[set label "Open lines"]
+  ask information 13 [set label "Worksite hazards"]
+  ask information 14 [set label "planned movements team A"]
+  ask information 15[set label "planned movements team B"]
+  ask information 16 [set label "planned movements team C"]
+  ask information 17 [set label "planned movements team D"]
+  ask information 18 [set label "planned movements team E"]
+  ask information 19 [set label "LPA 1 details"]
+  ask information 20 [set label "LPA 1 authorised"]
+  ask information 21 [set label "worksite protection plan"]
+  ask information 22 [set label "site constraints"]
+  ask information 23 [set label "allocation of PO teams"]
+  ask information 24 [set label "PO knowledge and experience"]
+  ask information 25 [set label "work scope"]
+  ask information 26 [set label "assets to be maintained"]
+  ask information 27 [set label "LPA 2 details"]
+  ask information 28 [set label "points to be clipped"]
+  ask information 29 [set label "additional LPA details"]
+
+
+  set-default-shape humans "circle"
+  set-default-shape informations "square"
+
+reset-ticks
+end
+
+
+;; human 0 = PPO
+;; human 1 = Signaller
+;; human 2 = PO team A
+;; human 3 - PO team B
+;; human 4 = PO team C
+;; human 5 = PO team D
+;; human 6 = PO team E
+
+  ;; information 7 = points to be clipped A
+  ;; information 8 = points to be clipped B
+  ;; information 9 = points to be clipped C
+  ;; information 10 = points to be clipped D
+  ;; information 11 = points to be clipped E
+  ;; information 12 = open lines
+  ;; information 13 = worksite hazards
+;; information 14 = planned movements team A
+;; information 15 = planned movements team B
+;; information 16 = planned movements team C
+;; information 17 = planned movements team D
+;; information 18 = planned movements team E
+;; information 19 = LPA 1 details
+;; information 20 = LPA 1 authorised
+;; information 21 = worksite protection plan
+;; information 22 = site constraints
+;; information 23 = allocation of PO teams
+;; information 24 = PO knowledge and experience
+;; information 25 = work scope
+;; information 26 = track handed back
+;; information 27 = STN number
+;; information 28 = confirmation all points clips removed
+;; information 29 = all workers clear od danger zone
+;; information 30 = PO team A track entry
+;; information 31 = PO team D track entry
+;; information 32 = track safe and operable
+;; information 26 = assets to be maintained
+;; information 34 = PO team A confirm points clipped and locked
+;; information 35 = PO team B confirm points clipped and locked
+;; information 36 = PO team C confirm points clipped and locked
+;; information 37 = PO team D confirm points clipped and locked
+;; information 38 = PO team E confirm points clipped and locked
+;; information 39 = authorise clip removal
+;; information 29 = additional LPA details
+;; information 41 = confirmation all RTS removed
+;; information 27 = LPA 2 details
+;; information 28 = points to be clipped
+;; information 44 = LPA 2 authorised
+
+to go
+  ;; network 1 confirm protection arrangements with signaller
+
+  ask human 0 [create-edge-with human 1]
+  ask information 19 [create-edge-with human 1]
+
+  ;; the line of code above is a probability that the link between LPA details 1 and the signaller will be made x times out of 11, where x = the edge probability
+  ask information 19 [create-edge-with human 0]
+  ask information 21 [create-edge-with human 0]
+  ask information 21 [create-edge-with human 1]
+  ask information 25 [create-edge-with human 0]
+  ask information 25 [create-edge-with human 1]
+  ask information 27 [create-edge-with human 0]
+  ask information 27 [create-edge-with human 1]
+  ask information 29 [create-edge-with human 0]
+  ask information 29 [create-edge-with human 1]
+  tick
+  clear-links
+  ;; network 2 protection briefing
+  ask human 0 [create-edge-with human 2]
+  ask human 0 [create-edge-with human 3]
+  ask human 0 [create-edge-with human 4]
+  ask human 0 [create-edge-with human 5]
+  ask human 0 [create-edge-with human 6]
+  ask human 1 [create-edge-with human 2]
+  ask human 1 [create-edge-with human 3]
+  ask human 1 [create-edge-with human 4]
+  ask human 1 [create-edge-with human 5]
+  ask human 1 [create-edge-with human 6]
+  ask human 2 [create-edge-with human 3]
+  ask human 2 [create-edge-with human 4]
+  ask human 2 [create-edge-with human 5]
+  ask human 2 [create-edge-with human 6]
+  ask human 3 [create-edge-with human 4]
+  ask human 3 [create-edge-with human 5]
+  ask human 3 [create-edge-with human 6]
+  ask human 4 [create-edge-with human 5]
+  ask human 4 [create-edge-with human 6]
+  ask human 5 [create-edge-with human 6]
+  ask information 28 [create-edge-with human 0]
+  ask information 28 [create-edge-with human 2]
+  ask information 28 [create-edge-with human 3]
+  ask information 28 [create-edge-with human 4]
+  ask information 28 [create-edge-with human 5]
+  ask information 28 [create-edge-with human 6]
+  ask information 19 [create-edge-with human 0]
+  ask information 19 [create-edge-with human 2]
+  ask information 19 [create-edge-with human 3]
+  ask information 19 [create-edge-with human 4]
+  ask information 19 [create-edge-with human 5]
+  ask information 19 [create-edge-with human 6]
+  ask information 21 [create-edge-with human 0]
+  ask information 21 [create-edge-with human 2]
+  ask information 21 [create-edge-with human 3]
+  ask information 21 [create-edge-with human 4]
+  ask information 21 [create-edge-with human 5]
+  ask information 21 [create-edge-with human 6]
+  ask information 12 [
+     if random-float 1 < human-error-probability-task-2a
+    [create-edge-with human 0]
+  ]
+  ask information 12 [
+     if random-float 1 < human-error-probability-task-2b
+    [create-edge-with human 2]
+  ]
+  ask information 12 [
+    if random-float 1 < human-error-probability-task-2c
+    [create-edge-with human 3]
+  ]
+  ask information 12 [
+    if random-float 1 < human-error-probability-task-2d
+    [create-edge-with human 4]
+  ]
+  ask information 12 [
+    if random-float 1 < human-error-probability-task-2e
+    [create-edge-with human 5]
+  ]
+  ask information 12 [
+    if random-float 1 < human-error-probability-task-2f
+    [create-edge-with human 6]
+  ]
+  ask information 23 [create-edge-with human 0]
+  ask information 23 [create-edge-with human 2]
+  ask information 23 [create-edge-with human 3]
+  ask information 23 [create-edge-with human 4]
+  ask information 23 [create-edge-with human 5]
+  ask information 23 [create-edge-with human 6]
+  ask information 27 [create-edge-with human 0]
+  ask information 27 [create-edge-with human 2]
+  ask information 27 [create-edge-with human 3]
+  ask information 27 [create-edge-with human 4]
+  ask information 27 [create-edge-with human 5]
+  ask information 27 [create-edge-with human 6]
+  tick
+  clear-links
+  ;; network 3 worksite briefing
+  ask human 0 [create-edge-with human 2]
+  ask human 0 [create-edge-with human 3]
+  ask human 0 [create-edge-with human 4]
+  ask human 0 [create-edge-with human 5]
+  ask human 0 [create-edge-with human 6]
+  ask human 1 [create-edge-with human 2]
+  ask human 1 [create-edge-with human 3]
+  ask human 1 [create-edge-with human 4]
+  ask human 1 [create-edge-with human 5]
+  ask human 1 [create-edge-with human 6]
+  ask human 2 [create-edge-with human 3]
+  ask human 2 [create-edge-with human 4]
+  ask human 2 [create-edge-with human 5]
+  ask human 2 [create-edge-with human 6]
+  ask human 3 [create-edge-with human 4]
+  ask human 3 [create-edge-with human 5]
+  ask human 3 [create-edge-with human 6]
+  ask human 4 [create-edge-with human 5]
+  ask human 4 [create-edge-with human 6]
+  ask human 5 [create-edge-with human 6]
+  ask information 25 [create-edge-with human 0]
+  ask information 25 [create-edge-with human 2]
+  ask information 25 [create-edge-with human 3]
+  ask information 25 [create-edge-with human 4]
+  ask information 25 [create-edge-with human 5]
+  ask information 25 [create-edge-with human 6]
+  ask information 22 [create-edge-with human 0]
+  ask information 22 [create-edge-with human 2]
+  ask information 22 [create-edge-with human 3]
+  ask information 22 [create-edge-with human 4]
+  ask information 22 [create-edge-with human 5]
+  ask information 22 [create-edge-with human 6]
+  ask information 26 [create-edge-with human 0]
+  ask information 26 [create-edge-with human 2]
+  ask information 26 [create-edge-with human 3]
+  ask information 26 [create-edge-with human 4]
+  ask information 26 [create-edge-with human 5]
+  ask information 26 [create-edge-with human 6]
+  ask information 13 [
+   if random-float 1 < human-error-probability-task-3a
+    [create-edge-with human 0]
+  ]
+  ask information 13 [
+    if random-float 1 < human-error-probability-task-3b
+    [create-edge-with human 2]
+  ]
+  ask information 13 [
+    if random-float 1 < human-error-probability-task-3c
+    [create-edge-with human 3]
+  ]
+  ask information 13 [
+    if random-float 1 < human-error-probability-task-3d
+    [create-edge-with human 4]
+  ]
+  ask information 13 [
+    if random-float 1 < human-error-probability-task-3e
+    [create-edge-with human 5]
+  ]
+  ask information 13 [
+    if random-float 1 < human-error-probability-task-3f
+    [create-edge-with human 6]
+  ]
+  tick
+  clear-links
+  ;; network 4 planned PO movements
+  ask human 0 [create-edge-with human 2]
+  ask human 0 [create-edge-with human 3]
+  ask human 0 [create-edge-with human 4]
+  ask human 0 [create-edge-with human 5]
+  ask human 0 [create-edge-with human 6]
+  ask human 1 [create-edge-with human 2]
+  ask human 1 [create-edge-with human 3]
+  ask human 1 [create-edge-with human 4]
+  ask human 1 [create-edge-with human 5]
+  ask human 1 [create-edge-with human 6]
+  ask human 2 [create-edge-with human 3]
+  ask human 2 [create-edge-with human 4]
+  ask human 2 [create-edge-with human 5]
+  ask human 2 [create-edge-with human 6]
+  ask human 3 [create-edge-with human 4]
+  ask human 3 [create-edge-with human 5]
+  ask human 3 [create-edge-with human 6]
+  ask human 4 [create-edge-with human 5]
+  ask human 4 [create-edge-with human 6]
+  ask human 5 [create-edge-with human 6]
+  ask information 28 [create-edge-with human 0]
+  ask information 28 [create-edge-with human 2]
+  ask information 28 [create-edge-with human 3]
+  ask information 28 [create-edge-with human 4]
+  ask information 28 [create-edge-with human 5]
+  ask information 28 [create-edge-with human 6]
+  ask information 21 [create-edge-with human 2]
+  ask information 21 [create-edge-with human 3]
+  ask information 21 [create-edge-with human 4]
+  ask information 21 [create-edge-with human 5]
+  ask information 21 [create-edge-with human 6]
+  ask information 18 [create-edge-with human 0]
+  ask information 18 [create-edge-with human 2]
+  ask information 18 [create-edge-with human 3]
+  ask information 18 [create-edge-with human 4]
+  ask information 18 [create-edge-with human 5]
+  ask information 18 [create-edge-with human 6]
+  ask information 17 [create-edge-with human 0]
+  ask information 17 [create-edge-with human 2]
+  ask information 17 [create-edge-with human 3]
+  ask information 17 [create-edge-with human 4]
+  ask information 17 [create-edge-with human 5]
+  ask information 17 [create-edge-with human 6]
+  ask information 16 [create-edge-with human 0]
+  ask information 16 [create-edge-with human 2]
+  ask information 16 [create-edge-with human 3]
+  ask information 16 [create-edge-with human 4]
+  ask information 16 [create-edge-with human 5]
+  ask information 16 [create-edge-with human 6]
+  ask information 15 [create-edge-with human 0]
+  ask information 15 [create-edge-with human 2]
+  ask information 15 [create-edge-with human 3]
+  ask information 15 [create-edge-with human 4]
+  ask information 15 [create-edge-with human 5]
+  ask information 15 [create-edge-with human 6]
+  ask information 14 [create-edge-with human 0]
+  ask information 14 [create-edge-with human 2]
+  ask information 14 [create-edge-with human 3]
+  ask information 14 [create-edge-with human 4]
+  ask information 14 [create-edge-with human 5]
+  ask information 14 [create-edge-with human 6]
+  ask information 24 [create-edge-with human 0]
+  ask information 24 [create-edge-with human 2]
+  ask information 24 [create-edge-with human 3]
+  ask information 24 [create-edge-with human 4]
+  ask information 24 [create-edge-with human 5]
+  ask information 24 [create-edge-with human 6]
+  ask information 26 [create-edge-with human 0]
+  ask information 26 [create-edge-with human 2]
+  ask information 26 [create-edge-with human 3]
+  ask information 26 [create-edge-with human 4]
+  ask information 26 [create-edge-with human 5]
+  ask information 26 [create-edge-with human 6]
+  tick
+  clear-links
+  ;; network 5 PO team A pre-work check
+  ask human 0 [create-edge-with human 2]
+    ask information 7 [
+    if random-float 1 < human-error-probability-task-5a
+    [create-edge-with human 0]
+  ]
+    ask information 7 [
+    if random-float 1 < human-error-probability-task-5b
+    [create-edge-with human 2]
+  ]
+  ask information 14 [create-edge-with human 0]
+  ask information 14 [create-edge-with human 2]
+  tick
+  clear-links
+  ;; network 6 PO team B pre-work check
+  ask human 0 [create-edge-with human 3]
+    ask information 8 [
+    if random-float 1 < human-error-probability-task-6a
+    [create-edge-with human 0]
+  ]
+    ask information 8 [
+    if random-float 1 < human-error-probability-task-6b
+    [create-edge-with human 3]
+  ]
+  ask information 15 [create-edge-with human 0]
+  ask information 15 [create-edge-with human 3]
+  tick
+  clear-links
+  ;; network 7 PO team C pre-work check
+  ask human 0 [create-edge-with human 4]
+    ask information 9 [
+    if random-float 1 < human-error-probability-task-7a
+    [create-edge-with human 0]
+  ]
+    ask information 9 [
+    if random-float 1 < human-error-probability-task-7b
+    [create-edge-with human 4]
+  ]
+  ask information 16 [create-edge-with human 0]
+  ask information 16 [create-edge-with human 4]
+  tick
+  clear-links
+  ;; network 8 PO team D pre-work check
+  ask human 0 [create-edge-with human 5]
+    ask information 10 [
+    if random-float 1 < human-error-probability-task-8a
+    [create-edge-with human 0]
+  ]
+    ask information 10 [
+    if random-float 1 < human-error-probability-task-8b
+    [create-edge-with human 5]
+  ]
+  ask information 17 [create-edge-with human 0]
+  ask information 17 [create-edge-with human 5]
+  tick
+  clear-links
+  ;; network 9 PO team E pre-work check
+  ask human 0 [create-edge-with human 6]
+    ask information 11 [
+    if random-float 1 < human-error-probability-task-9a
+    [create-edge-with human 0]
+  ]
+    ask information 11 [
+    if random-float 1 < human-error-probability-task-9b
+    [create-edge-with human 6]
+  ]
+  ask information 18 [create-edge-with human 0]
+  ask information 18 [create-edge-with human 6]
+  tick
+  clear-links
+end
+to-report critical-information
+  ask information 13
+[
+  show my-in-links ;; shows an agentset containing the link 0 1
+]
+end
